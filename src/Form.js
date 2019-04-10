@@ -66,7 +66,8 @@ const formData = {
 
 class Form extends Component {
   state = {
-    formFieldsToSubmit: {}
+    formFieldsToSubmit: {},
+    isFormValid: false
   };
 
   isFieldValid = (isValid, inputValue, inputName) => {
@@ -92,6 +93,30 @@ class Form extends Component {
     });
   };
 
+  submitForm = () => {
+    const { formFieldsToSubmit, isFormValid } = this.state;
+    if (isFormValid) {
+      alert("Success");
+    } else {
+      if (Object.keys(formFieldsToSubmit).length) {
+        for (let field in formFieldsToSubmit) {
+          if (!formFieldsToSubmit.hasOwnProperty(field)) continue;
+          let obj = formFieldsToSubmit[field];
+          console.log(obj);
+          if (!obj.isValid) {
+            alert(`${field} is not correct`);
+          } else {
+            this.setState({
+              isFormValid: true
+            });
+          }
+        }
+      } else {
+        alert("Fill all required fields before submission");
+      }
+    }
+  };
+
   render() {
     console.log(this.state.formFieldsToSubmit);
     return (
@@ -115,7 +140,9 @@ class Form extends Component {
           }
         />
 
-        <button type="submit">Submit Form</button>
+        <button type="submit" onClick={this.submitForm}>
+          Submit Form
+        </button>
       </div>
     );
   }

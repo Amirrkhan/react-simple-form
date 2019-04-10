@@ -36,34 +36,40 @@ class formField extends Component {
     const { valid, inputValue } = this.state;
     const { name } = this.props.formData.config;
 
+    this.inputValidation(event.target.value);
+
     this.setState({
       inputValue: event.target.value,
       touched: blur
     });
-    this.inputValidation(event, blur);
-    if (blur) {
-      this.props.isFieldValid(valid, inputValue, name);
-    }
+
+    this.props.isFieldValid(valid, inputValue, name);
   };
 
   validationMessageTemplate = () => {
-    const { valid, touched } = this.state;
+    const { valid, touched, inputValue } = this.state;
     const validationMessage = this.props.formData.validationMessage;
-    let validationMessageTemplate;
+    let validationMessageTemplate = null;
     if (touched) {
-      !valid
-        ? (validationMessageTemplate = (
+      if (!valid) {
+        if (inputValue) {
+          validationMessageTemplate = (
             <span className="form__invalid--message">{validationMessage}</span>
-          ))
-        : (validationMessageTemplate = null);
+          );
+        } else {
+          validationMessageTemplate = (
+            <span className="form__invalid--message">Field is required</span>
+          );
+        }
+      }
     }
     return validationMessageTemplate;
   };
 
-  inputValidation = () => {
+  inputValidation = inputValue => {
     const { validation } = this.props.formData;
-    const { inputValue } = this.state;
 
+    console.log(inputValue);
     if (validation.required) {
       if (inputValue) {
         if (validation.isNumber) {
